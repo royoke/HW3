@@ -53,6 +53,14 @@ db = SQLAlchemy(app) # For database use
 
 ## Should have a __repr__ method that returns strings of a format like:
 #### {Tweet text...} (ID: {tweet id})
+class Tweet(db.Model):
+    __tablename__ = 'tweets'
+    tweetId = db.column(db.Integer, primary_key=True)
+    tweetText = db.column(db.String(280))
+    userId = db.column(db.Integer, db.ForeignKey('users.userId'))
+
+    def __repr__(self):
+        return 'Tweet text: {} Tweet ID: {} User ID: {}'.format(self.tweetText,self.tweetId,self.userId)
 
 
 # - User
