@@ -143,7 +143,6 @@ def internal_server_error(e):
 # - If you enter a tweet with identical text and username to an existing tweet, it should redirect you to the list of all the tweets and a message that you've already saved a tweet like that.
 # - If the Tweet form is entered and validates properly, the data from the form should be saved properly to the database, and the user should see the form again with a message flashed: "Tweet successfully saved!"
 # Try it out in the sample app to check against yours!
-
 @app.route('/', methods=['GET', 'POST'])
 def index():
     # Initialize the form
