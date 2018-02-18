@@ -190,21 +190,47 @@ def index():
 
 @app.route('/all_tweets')
 def see_all_tweets():
-    return "Worked" # Replace with code
     # TODO 364: Fill in this view function so that it can successfully render the template all_tweets.html, which is provided.
     # HINT: Careful about what type the templating in all_tweets.html is expecting! It's a list of... not lists, but...
     # HINT #2: You'll have to make a query for the tweet and, based on that, another query for the username that goes with it...
+    all_tweets = []
+    tweets = Tweet.query.all()
+    for tweet in tweets:
+        all_tweets.append((tweet.tweetText, User.query.filter_by(userId=tweet.userId).first().username))
+    return render_template('all_tweets.html',all_tweets=all_tweets)
+
 
 
 @app.route('/all_users')
 def see_all_users():
-    pass # Replace with code
     # TODO 364: Fill in this view function so it can successfully render the template all_users.html, which is provided.
-
+    users = User.query.all()
+    return render_template('all_users.html',users=users)
 # TODO 364
 # Create another route (no scaffolding provided) at /longest_tweet with a view function get_longest_tweet (see details below for what it should do)
 # TODO 364
 # Create a template to accompany it called longest_tweet.html that extends from base.html.
+@app.route('/longest_tweet')
+def get_longest_tweet(): # This code is ugly but it works :)
+    tweets = Tweet.query.all()
+    longest_tweet_chars = 0
+    longest_tweet = ''
+    for tweet in tweets:
+        tweet_char_count = 0
+        tweet_text = tweet.tweetText
+        for char in tweet_text:
+            if char != ' ':
+                tweet_char_count += 1
+        if tweet_char_count > longest_tweet_chars:
+            longest_tweet = tweet
+            longest_tweet_chars = tweet_char_count
+        if tweet_char_count == longest_tweet_chars:
+            long_tweet_list = [tweet_text, longest_tweet.tweetText]
+            long_tweet_list.sort()
+            if long_tweet_list[0] == tweet_text:
+                longest_tweet = tweet
+    longest_tweet_tup = (Tweet.query.filter_by(tweetText=longest_tweet.tweetText).first().tweetText,User.query.filter_by(userId=longest_tweet.userId).first().username,User.query.filter_by(userId=longest_tweet.userId).first().display_name)
+    return render_template('longest_tweet.html',longest_tweet=longest_tweet_tup)
 
 # NOTE:
 # This view function should compute and render a template (as shown in the sample application) that shows the text of the tweet currently saved in the database which has the most NON-WHITESPACE characters in it, and the username AND display name of the user that it belongs to.
